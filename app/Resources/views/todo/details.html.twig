@@ -2,6 +2,33 @@
 
 {% block body %}
 
-    details
+    <h2 class="page-headers">Details ToDo</h2>
+
+    <table class="table">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Priority</th>
+            <th>Due Date</th>
+            <th>Create Date</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <th scope="row">{{ todo.id }}</th>
+            <td>{{ todo.name }}</td>
+            <td>{{ todo.category }}</td>
+            <td>{{ todo.description }}</td>
+            <td>{{ todo.priority }}</td>
+            <td>{{ todo.dueDate | date("d/m/Y", false) }}</td>
+            <td>{{ todo.createDate | date("d/m/Y", false) }}</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a href="/" class="btn btn-default">Back to todos</a>
 
 {% endblock %}
