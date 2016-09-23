@@ -87,4 +87,18 @@ class TodoController extends Controller
 
         return $this->render('todo/details.html.twig', array('todo' => $todo));
     }
+
+    /**
+     * @Route("/todo/delete/{id}", name="todo_delete")
+     */
+    public function deleteAction($id)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $todo = $this->getDoctrine()->getRepository("AppBundle:ToDo")->find($id);
+
+        $em->remove($todo);
+        $em->flush();
+
+        return $this->redirectToRoute('todo_list');
+    }
 }
