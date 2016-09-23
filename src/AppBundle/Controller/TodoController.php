@@ -75,7 +75,43 @@ class TodoController extends Controller
      */
     public function editAction($id, Request $request)
     {
-        return $this->render('todo/edit.html.twig');
+        $todo = $this->getDoctrine()->getRepository('AppBundle:ToDo')->find($id);
+
+        $now = new \DateTime('now');
+
+        $name = $todo->getName();
+        $category = $todo->getCategory();
+        $description = $todo->getDescription();
+        $priority = $todo->getPriority();
+        $due_date = $todo->getDueDate();
+
+        $todo->setName($name);
+        $todo->setCategory($category);
+        $todo->setDescription($description);
+        $todo->setPriority($priority);
+        $todo->setDueDate($due_date);
+        $todo->setCreateDate($now);
+
+        $form = $this->createFormBuilder($todo)
+            ->add('name', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('category', TextType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('description', TextareaType::class, array('attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('priority', ChoiceType::class, array('choices' => array('Low' => 'Low', 'Medium' => 'Medium', 'High' => 'High'), 'attr' => array('class' => 'form-control', 'style' => 'margin-bottom:15px')))
+            ->add('due_date', DateTimeType::class, array('attr' => array('class' => 'formcontrol', 'style' => 'margin-bottom:15px')))
+            ->add('update', SubmitType::class, array('label' => 'Update ToDo', 'attr' => array('class' => 'btn btn-primary', 'style' => 'margin-bottom:15px')))
+            ->getForm();
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($todo);
+            $em->flush();
+
+            return $this->redirectToRoute('todo_list');
+        }
+
+        return $this->render('todo/create.html.twig', array('form' => $form->createView()));
     }
 
     /**
